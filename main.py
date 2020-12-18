@@ -1,5 +1,4 @@
 import os
-import time
 from mongo_dump import TelegramNotifications, EmailNotifications
 
 
@@ -18,5 +17,3 @@ if __name__ == '__main__':
 
     smtp = EmailNotifications()
     smtp.send_email(MSG)
-
-    time.sleep(6000)
