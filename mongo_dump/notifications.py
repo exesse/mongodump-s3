@@ -14,14 +14,11 @@ class TelegramNotifications:
         chat_id: id of the chat where notifications will be send
     """
 
-    def __init__(self, token, chat_id):  # FIXME
+    def __init__(self):
         """Initializes TelegramNotifications with token and chat_id."""
-        # FIXME
-        # self.token = os.getenv('TELEGRAM_TOKEN')
-        # self.chat_id = os.getenv('TELEGRAM_CHAT_ID')
-        self.token = token  # FIXME
-        self.chat_id = chat_id  # FIXME
-        self.telegram_send_message = send_message = f'https://api.telegram.org/bot{self.token}/sendMessage'
+        token = os.getenv('TELEGRAM_TOKEN')
+        self.chat_id = os.getenv('TELEGRAM_CHAT_ID')
+        self.telegram_send_message = f'https://api.telegram.org/bot{token}/sendMessage'
 
     def send_msg(self, message: str) -> None:
         """Send messages using Telegram API calls.
@@ -42,15 +39,10 @@ class EmailNotifications:
     Attributes:
     """
 
-    def __init__(self, recipient):  # FIXME
+    def __init__(self):
         """Initializes EmailNotification with SMTP relay server and recipient email."""
         self.smtp_server = os.getenv('SMTP_RELAY')
-        if self.smtp_server is None:
-            self.smtp_server = 'localhost'
         self.recipient = os.getenv('EMAIL')
-        # FIXME remove later
-        if self.recipient is None:
-            self.recipient = recipient
 
     def send_email(self, text: str) -> None:
         """Sends given text body as an email.

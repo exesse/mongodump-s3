@@ -1,4 +1,3 @@
 venv/
-mongo_dump/creds.py
 dev.env
 dev.py
