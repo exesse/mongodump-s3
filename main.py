@@ -1,23 +1,83 @@
+"""mongo-dump is a S3 storage compatible backup utility for MongoDB."""
+
 import os
-from mongo_dump import TelegramNotifications, EmailNotifications
+import logging
+from socket import gaierror
+from mongo_dump import TelegramNotifications, EmailNotifications, MongoDump
+from dev import set_env  # FIXME remove in final version
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+
+def send_telegram_notification(msg: str) -> None:
+    """"Handler for Telegram notifications.
+
+    Attributes:
+        msg: str, text body to be send
+
+    Returns:
+        None
+    """
+    if os.getenv('TELEGRAM_CHAT_ID') and os.getenv('TELEGRAM_TOKEN'):
+        logging.info('Sending telegram notification to "%s".', os.getenv('TELEGRAM_CHAT_ID'))
+        TelegramNotifications().send_msg(msg)
+
+
+def send_email_notification(msg: str) -> None:
+    """Handler for Email notifications.
+
+    Attributes:
+        msg: str, text body to be sent
+
+    Returns:
+        None
+    """
+    if os.getenv('EMAIL') and os.getenv('SMTP_RELAY'):
+        try:
+            EmailNotifications().send_email(msg)
+            logging.info('Sending email to "%s" via smtp relay "%s"',
+                         os.getenv('EMAIL'), os.getenv('SMTP_RELAY'))
+        except gaierror:
+            logging.error('smtp relay server "%s" is not available. Please check.',
+                          os.getenv('SMTP_RELAY'))
+
+
+def perform_mongodb_dump() -> dict:
+    """Handler for MongoDump class.
+
+    Returns:
+        A dictionary with the result values for operations.
+        An example:
+
+        {
+        'dump': True,
+        'size': '2K',
+        'path': '/tmp/mongo-dump/smoke-2020-12-21'
+        }
+    """
+    if os.getenv('MONGO_URI') is None:
+        logging.error('No MongoDB connection URI provided. Nothing to do - exiting now.')
+        exit(1)
+    svc = MongoDump()
+    mongo_dump_response = svc.start()
+    return mongo_dump_response
 
 
 def main():
-    pass
+    """Combines all moving parts together and sends notifications if needed."""
+
+    set_env()  # FixMe remove for production
+
+    result = str(perform_mongodb_dump())
+
+    send_email_notification(result)
+
+    send_telegram_notification(result)
+
+    # ToDo S3 upload here
+    # ToDo parse dump result here
+    # ToDo parse upload result here
 
 
 if __name__ == '__main__':
-    MSG = '\U0001F4A5 test msg'
-
-    print(os.getenv('EMAIL'))
-    print(os.getenv('MONGO_URI'))
-    print(os.getenv('TELEGRAM_CHAT_ID'))
-    print(os.getenv('TELEGRAM_TOKEN'))
-    print(os.getenv('SMTP_RELAY'))
-
-    # Notifications TEST
-    telegram = TelegramNotifications()
-    telegram.send_msg(MSG)
-
-    smtp = EmailNotifications()
-    smtp.send_email(MSG)
+    main()
