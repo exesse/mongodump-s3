@@ -2,6 +2,10 @@ import os
 from mongo_dump import TelegramNotifications, EmailNotifications
 
 
+def main():
+    pass
+
+
 if __name__ == '__main__':
     MSG = '\U0001F4A5 test msg'
 
