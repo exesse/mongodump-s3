@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 MAINTAINER Vladislav I. Kulbatski
 
-WORKDIR /usr/src/app
+WORKDIR /mongo-dump
 
 COPY . .
 

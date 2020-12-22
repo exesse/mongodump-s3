@@ -57,6 +57,7 @@ def perform_mongodb_dump() -> dict:
         }
     """
     mongodb_uri = os.getenv('MONGO_URI')
+    # ToDO convert to if mongo_uri than run code
     if mongodb_uri is None or mongodb_uri == '':
         logging.error('No MongoDB connection URI provided. Nothing to do - exiting now.')
         exit(1)
