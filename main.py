@@ -2,9 +2,10 @@
 
 import os
 import logging
+from pathlib import Path
 from socket import gaierror
+from dotenv import load_dotenv
 from mongo_dump import TelegramNotifications, EmailNotifications, MongoDump
-from dev import set_env  # FIXME remove in final version
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -55,7 +56,8 @@ def perform_mongodb_dump() -> dict:
         'path': '/tmp/mongo-dump/smoke-2020-12-21'
         }
     """
-    if os.getenv('MONGO_URI') is None:
+    mongodb_uri = os.getenv('MONGO_URI')
+    if mongodb_uri is None or mongodb_uri == '':
         logging.error('No MongoDB connection URI provided. Nothing to do - exiting now.')
         exit(1)
     svc = MongoDump()
@@ -66,7 +68,9 @@ def perform_mongodb_dump() -> dict:
 def main():
     """Combines all moving parts together and sends notifications if needed."""
 
-    set_env()  # FixMe remove for production
+    # FixME Lets explicitly load environment variables in dev
+    env_path = Path('./dev.env')
+    load_dotenv(dotenv_path=env_path)
 
     result = str(perform_mongodb_dump())
 
