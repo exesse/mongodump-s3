@@ -1,6 +1,7 @@
 """Module implements methods needed to perform dump related operations."""
 
 import os
+import sys
 import shlex
 import socket
 import logging
@@ -10,8 +11,9 @@ from subprocess import Popen, PIPE
 from pathlib import Path
 from typing import Union
 from hurry.filesize import size, si
+from mongo_dump import env_exists, log
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+log()
 
 
 class MongoDump:
@@ -26,9 +28,13 @@ class MongoDump:
 
     def __init__(self):
         """Initializes MongoDump with connection URI."""
-        self.mongo_uri = os.getenv('MONGO_URI')
+        mongo_uri = os.getenv('MONGO_URI')
         output_folder_name = os.getenv('OUTPUT_FOLDER')
-        if output_folder_name is None:
+        if not env_exists(mongo_uri):
+            logging.error('No MongoDB connection URI provided. Nothing to do - exiting now.')
+            sys.exit(1)
+        self.mongo_uri = mongo_uri
+        if not env_exists(output_folder_name):
             output_folder_name = 'dump'
         self.output_folder = f'/tmp/mongo-dump/{output_folder_name}'
 
