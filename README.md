@@ -18,3 +18,5 @@ sudo docker build -t mongo-dump:0.0.1-dev .
 
 sudo docker stop mongo-dump && sudo docker rm mongo-dump && sudo docker rmi mongo-dump:0.0.1-dev
 ```
+
+GCP mount gcp-key.json to /mongo-dump in docker or 

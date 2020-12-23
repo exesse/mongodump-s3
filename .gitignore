@@ -1,3 +1,2 @@
 venv/
-dev.env
-dev.py
+dev.*
