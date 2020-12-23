@@ -5,34 +5,34 @@ from dotenv import load_dotenv
 from mongo_dump import MongoDump, S3, Notifications
 
 
-def main():
+# ToDo S3 upload here
+# ToDo parse dump result here
+# ToDo parse upload result here
+
+
+def load_env(env_file):
+    env_path = Path(env_file)
+    load_dotenv(dotenv_path=env_path)
+
+
+def main(local=False):
     """Combines all moving parts together and sends notifications if needed."""
 
-    # # FixME Lets explicitly load environment variables in dev
-    env_path = Path('./dev.env')
-    load_dotenv(dotenv_path=env_path)
+    if local:
+        load_env('./dev.env')  # FixMe
 
     result = str(MongoDump().start())
 
-    # cloud = S3()
-    #
-    # cloud.create_storage_clients()
+    cloud = S3()
 
-    # send_email_notification(result)
-    #
-    # send_telegram_notification(result)
+    cloud.create_storage_clients()
 
-    SEND = Notifications(result)
+    report = Notifications(result)
 
-    SEND.send_telegram_notification()
+    report.send_telegram_notification()
 
-    SEND.send_email_notification()
-
-
-    # ToDo S3 upload here
-    # ToDo parse dump result here
-    # ToDo parse upload result here
+    report.send_email_notification()
 
 
 if __name__ == '__main__':
-    main()
+    main(True)
