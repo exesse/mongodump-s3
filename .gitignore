@@ -1,2 +1,5 @@
 venv/
+.pytype/
+.idea/
+mongo_dump/__pycache__/
 dev.*

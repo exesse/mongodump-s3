@@ -10,6 +10,7 @@ from requests import post
 
 from .helpers import env_exists, log
 
+
 log()
 
 
@@ -72,7 +73,7 @@ class Notifications:
                 msg.set_content(self.message)
                 with smtplib.SMTP(smtp_relay) as smtp:
                     smtp.send_message(msg)
-                logging.info('Email was sent to "%s" via smtp relay "%s"',
+                logging.info('Email was sent to "%s" via smtp relay "%s".',
                              email, smtp_relay)
                 return True
             except gaierror:
