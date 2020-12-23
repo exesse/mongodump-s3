@@ -2,49 +2,50 @@
 
 import os
 import smtplib
-import requests
+import logging
+from socket import gaierror
 from email.message import EmailMessage
+from requests import post
+from .helpers import env_exists, log
+
+log()
 
 
-class TelegramNotifications:
-    """Sends notifications using Telegram API.
+class Notifications:
+    """Handles notifications requests
 
     Attributes:
-        token: bot token that will be used to send notifications
-        chat_id: id of the chat where notifications will be send
+        message: str, plain text msg that will be send
     """
 
-    def __init__(self):
-        """Initializes TelegramNotifications with token and chat_id."""
-        token = os.getenv('TELEGRAM_TOKEN')
-        self.chat_id = os.getenv('TELEGRAM_CHAT_ID')
-        self.telegram_send_message = f'https://api.telegram.org/bot{token}/sendMessage'
+    def __init__(self, message: str):
+        """Initializes class Notifications"""
+        self.message = message
 
-    def send_msg(self, message: str) -> None:
-        """Send messages using Telegram API calls.
-
-        Arguments:
-            message: str, text that will be send to the target user
+    def send_telegram_notification(self) -> bool:
+        """"Handler for Telegram notifications.
 
         Returns:
-            None
+            Fail: if no env variables were provided
+            True: if environment values exists and msg was sent
         """
-        text_body = {'chat_id': self.chat_id, 'text': message}
-        requests.post(self.telegram_send_message, text_body).json()
+        telegram_chat_id = os.getenv('TELEGRAM_CHAT_ID')
+        telegram_token = os.getenv('TELEGRAM_TOKEN')
 
+        if env_exists(telegram_chat_id) and env_exists(telegram_token):
+            telegram_send_message = f'https://api.telegram.org/bot{telegram_token}/sendMessage'
+            text_body = {'chat_id': telegram_chat_id, 'text': self.message}
+            try:
+                post(telegram_send_message, text_body).json()
+                logging.info('Telegram notification sent to "%s".', telegram_chat_id)
+                return True
+            except ConnectionError as error_response:
+                details = str(error_response).split(':')[0]
+                logging.error(details)
+        return False
 
-class EmailNotifications:
-    """Sends notifications using SMTP relay.
-
-    Attributes:
-    """
-
-    def __init__(self):
-        """Initializes EmailNotification with SMTP relay server and recipient email."""
-        self.smtp_server = os.getenv('SMTP_RELAY')
-        self.recipient = os.getenv('EMAIL')
-
-    def send_email(self, text: str) -> None:
+    @staticmethod
+    def email_handler(recipient, smtp_server, message):
         """Sends given text body as an email.
 
         Attributes:
@@ -56,7 +57,31 @@ class EmailNotifications:
         msg = EmailMessage()
         msg['Subject'] = '\U0001F4D1 [mongo-dump] status report'
         msg['From'] = 'mongo-dump@service.io'
-        msg['To'] = self.recipient
-        msg.set_content(text)
-        with smtplib.SMTP(self.smtp_server) as smtp:
+        msg['To'] = recipient
+        msg.set_content(message)
+        with smtplib.SMTP(smtp_server) as smtp:
             smtp.send_message(msg)
+
+    def send_email_notification(self) -> bool:
+        """Handler for Email notifications
+
+        Returns:
+            Fail: if no env variables were provided
+            True: if environment values exists and msg was sent
+        """
+        email = os.getenv('EMAIL')
+        smtp_relay = os.getenv('SMTP_RELAY')
+
+        if env_exists(email):
+            if not env_exists(smtp_relay):
+                smtp_relay = 'localhost'
+            try:
+                self.email_handler(email, smtp_relay, self.message)
+                logging.info('Email was sent to "%s" via smtp relay "%s"',
+                             email, smtp_relay)
+                return True
+            except gaierror:
+                logging.error('smtp relay server "%s" is not available. Please check.',
+                              smtp_relay)
+
+        return False
