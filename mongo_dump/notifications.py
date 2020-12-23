@@ -14,8 +14,7 @@ log()
 
 class Notifications:
 
-    """
-    Handles notifications requests.
+    """Handles notifications requests.
 
     Attributes:
         message: str, plain text msg that will be send
@@ -26,8 +25,7 @@ class Notifications:
         self.message = message
 
     def send_telegram_notification(self) -> bool:
-        """"
-        Handler for Telegram notifications.
+        """"Handler for Telegram notifications.
 
         Returns:
             Fail: if no env variables were provided
