@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from socket import gaierror
 from dotenv import load_dotenv
-from mongo_dump import TelegramNotifications, EmailNotifications, MongoDump
+from mongo_dump import TelegramNotifications, EmailNotifications, MongoDump, S3
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -75,9 +75,14 @@ def main():
 
     result = str(perform_mongodb_dump())
 
+    cloud = S3()
+
+    cloud.create_storage_clients()
+
     send_email_notification(result)
 
     send_telegram_notification(result)
+
 
     # ToDo S3 upload here
     # ToDo parse dump result here

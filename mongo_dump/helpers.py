@@ -7,6 +7,5 @@ def env_exists(env_variable):
     return False
 
 
-def log(level='INFO'):
-    severity = f'logging.{level}'
-    return logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=severity)
+def log():
+    return logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)

@@ -6,7 +6,6 @@ import json
 import logging
 import datetime
 from pathlib import Path
-from dotenv import load_dotenv
 from boto3 import client as aws_client
 from google.cloud import storage as gcp_client
 from azure.storage.blob import BlobServiceClient as AzureClient
@@ -14,7 +13,7 @@ from botocore.exceptions import ClientError as AmazonClientError
 from google.cloud.exceptions import ClientError as GoogleClientError
 from azure.core.exceptions import AzureError
 from azure.core.exceptions import ResourceExistsError as AzureResourceExistsError
-from mongo_dump import env_exists, log
+from .helpers import env_exists, log
 
 
 log()
@@ -26,9 +25,8 @@ log()
 class S3:
     """Implements S3 storage related operations."""
 
-    def __init__(self, env_path: str):
+    def __init__(self):
         """Initializes class S3 with bucket name."""
-        load_dotenv(dotenv_path=env_path)  # FixMe remove in final
         self.s3_bucket = os.getenv('BUCKET')
         self.mongo_dump_key = f'/tmp/mongo-dump-{str(datetime.date.today())}.json'
 
@@ -182,10 +180,3 @@ class S3:
         logging.info(providers)  # FixMe set to debug or remove
         self.__remove_gcp_key()  # FixMe remove later
         return providers
-
-
-if __name__ == '__main__':
-    env = Path('/home/exesse/Bin/python/mongo-dump/dev.env')
-    cloud = S3(env)
-    cloud.create_storage_clients()
-
