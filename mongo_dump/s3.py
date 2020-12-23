@@ -7,20 +7,19 @@ import logging
 import datetime
 from pathlib import Path
 from dotenv import load_dotenv
-from azure.storage.blob import BlobServiceClient
-from azure.core.exceptions import ResourceExistsError
-import boto3
+from boto3 import client as aws_client
+from google.cloud import storage as gcp_client
+from azure.storage.blob import BlobServiceClient as AzureClient
 from botocore.exceptions import ClientError as AmazonClientError
-from google.cloud import storage
 from google.cloud.exceptions import ClientError as GoogleClientError
-from mongo_dump import env_exists
+from azure.core.exceptions import AzureError
+from azure.core.exceptions import ResourceExistsError as AzureResourceExistsError
+from mongo_dump import env_exists, log
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-# ToDo 'Container' already exist for provider specific
-# ToDo use helper methods for variables check
-# ToDo return logging on empty provider envs
-# ToDo Write methods for each provider with async upload of a file to the bucket
+log()
+
+# ToDo Write methods for each provider with sync upload of a file to the bucket
 # ToDo Write handler that uploads folder for each provider
 
 
@@ -41,15 +40,18 @@ class S3:
             azure_s3: bucket object that will be used to operate with Azure API
         """
         azure_connection_string = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
-        if azure_connection_string is not None and azure_connection_string != '':
+        if env_exists(azure_connection_string):
             logging.info('Azure connection parameters found.')
-            azure_connection = BlobServiceClient.from_connection_string(azure_connection_string)
+            azure_connection = AzureClient.from_connection_string(azure_connection_string)
             azure_s3 = azure_connection.get_container_client(self.s3_bucket)
             try:
                 azure_s3.create_container()
-            except ResourceExistsError:
-                logging.info('Container "%s" already exists.', self.s3_bucket)
-            return azure_s3
+                return azure_s3
+            except AzureResourceExistsError:
+                logging.info('Container "%s" already exists on Azure and owned by you.', self.s3_bucket)
+                return azure_s3
+            except AzureError as error_response:
+                logging.error(error_response)
         return False
 
     def __make_aws_client(self):
@@ -59,26 +61,25 @@ class S3:
             False: if no connection string provided
             aws_s3: bucket object that will be used to operate with Amazon API
         """
-        aws_region = os.getenv('AWS_REGION')
-        if aws_region is None or aws_region == '':
-            aws_region = 'us-west-2'
-        logging.info('"%s" will be used as AWS region', aws_region)
         aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
         aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-        if aws_access_key_id is not None and aws_access_key_id != '':
-            if aws_secret_access_key is not None and aws_secret_access_key != '':
-                logging.info('AWS connection parameters found.')
-                aws_s3 = boto3.client('s3', region_name=aws_region)
-                location = {'LocationConstraint': aws_region}
-                try:
-                    aws_s3.create_bucket(Bucket=self.s3_bucket, CreateBucketConfiguration=location)
+        aws_region = os.getenv('AWS_REGION')
+        if env_exists(aws_access_key_id) and env_exists(aws_secret_access_key):
+            logging.info('AWS connection parameters found.')
+            if not env_exists(aws_region):
+                aws_region = 'us-west-2'
+            logging.info('"%s" will be used as AWS region', aws_region)
+            aws_s3 = aws_client('s3', region_name=aws_region)
+            location = {'LocationConstraint': aws_region}
+            try:
+                aws_s3.create_bucket(Bucket=self.s3_bucket, CreateBucketConfiguration=location)
+                return aws_s3
+            except AmazonClientError as error_response:
+                if error_response.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
+                    logging.info('Container "%s" already exists on AWS and owned by you.', self.s3_bucket)
                     return aws_s3
-                except AmazonClientError as exc:
-                    if exc.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
-                        logging.info('Container "%s" already exists.', self.s3_bucket)
-                        return aws_s3
-                    else:
-                        logging.error(exc)
+                else:
+                    logging.error(error_response)
         return False
 
     def __make_gcp_client(self):
@@ -89,22 +90,33 @@ class S3:
             gcp_s3: bucket object that will be used to operate with GCP API
         """
         google_application_credentials = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        google_region = os.getenv('GOOGLE_REGION')
         if not env_exists(google_application_credentials) or not Path(google_application_credentials).is_file():
-            if not self.generate_gcp_key():
+            if not self.__generate_gcp_key():
                 return False
         logging.info('GCP connection parameters found.')
-        gcp_s3 = storage.Client()
-        try:
-            gcp_s3.create_bucket(self.s3_bucket)
-            return gcp_s3
-        except GoogleClientError as e:
-            if 'You already own this bucket' in str(e):
-                logging.info('Container "%s" already exists.', self.s3_bucket)
+        gcp_s3 = gcp_client.Client()
+        for existing_bucket in gcp_s3.list_buckets():
+            if existing_bucket.name == self.s3_bucket:
+                logging.info('Container "%s" already exists on GCP and owned by you.', self.s3_bucket)
                 return gcp_s3
-            logging.error(e)
+        if not env_exists(google_region):
+            google_region = 'us'
+        try:
+            logging.info('"%s" will be used as AWS region', google_region)
+            gcp_s3.create_bucket(self.s3_bucket, location=google_region)
+            return gcp_s3
+        except GoogleClientError as error_response:
+            logging.error(error_response)
         return False
 
-    def generate_gcp_key(self):
+    def __generate_gcp_key(self) -> bool:
+        """Inspects environmental variables and generates temporary GCP key
+
+        Returns:
+            False: if some of the required parameters are missing
+            True: if the key was successfully generated
+        """
         service_type = os.getenv('TYPE')
         project_id = os.getenv('PROJECT_ID')
         private_key_id = os.getenv('PRIVATE_KEY_ID')
@@ -140,6 +152,21 @@ class S3:
             return True
         return False
 
+    def __remove_gcp_key(self):
+        """Removes temporary GCP access key
+
+        Returns:
+            False: if some error occurred
+            True: if the key was removed
+        """
+        if Path(self.mongo_dump_key).is_file():
+            try:
+                os.remove(self.mongo_dump_key)
+            except os.error as exc:
+                logging.error(exc)
+                return False
+        return True
+
     def create_storage_clients(self):
         """Creates client connections from env for the cloud to be used."""
         providers = dict()
@@ -153,6 +180,7 @@ class S3:
         if gcp_s3:
             providers['gcp'] = gcp_s3
         logging.info(providers)  # FixMe set to debug or remove
+        self.__remove_gcp_key()  # FixMe remove later
         return providers
 
 
