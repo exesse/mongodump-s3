@@ -3,9 +3,11 @@
 import os
 import smtplib
 import logging
+
 from socket import gaierror
 from email.message import EmailMessage
 from requests import post
+
 from .helpers import env_exists, log
 
 log()
@@ -41,7 +43,8 @@ class Notifications:
             text_body = {'chat_id': telegram_chat_id, 'text': self.message}
             try:
                 post(telegram_send_message, text_body).json()
-                logging.info('Telegram notification sent to "%s".', telegram_chat_id)
+                logging.info('Telegram notification sent to "%s".',
+                             telegram_chat_id)
                 return True
             except ConnectionError as error_response:
                 details = str(error_response).split(':')[0]
@@ -73,6 +76,7 @@ class Notifications:
                              email, smtp_relay)
                 return True
             except gaierror:
-                logging.error('smtp relay server "%s" is not available. Please check.',
-                              smtp_relay)
+                logging.error(
+                    'smtp relay server "%s" is not available. Please check.',
+                    smtp_relay)
         return False
