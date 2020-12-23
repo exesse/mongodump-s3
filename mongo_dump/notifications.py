@@ -13,14 +13,16 @@ log()
 
 
 class Notifications:
-    """Handles notifications requests.
+
+    """
+    Handles notifications requests.
 
     Attributes:
         message: str, plain text msg that will be send
     """
 
     def __init__(self, message: str):
-        """Initializes class Notifications"""
+        """Initializes class Notifications."""
         self.message = message
 
     def send_telegram_notification(self) -> bool:
@@ -48,10 +50,13 @@ class Notifications:
 
     @staticmethod
     def email_handler(recipient, smtp_server, message):
-        """Sends given text body as an email.
+        """
+        Sends given text body as an email.
 
         Attributes:
-            text: string, emails text body.
+            recipient: str, email address to notify
+            smtp_server: str, relay server that email requests
+            message: str, plain text message that will be sent
 
         Returns:
             None
@@ -65,7 +70,8 @@ class Notifications:
             smtp.send_message(msg)
 
     def send_email_notification(self) -> bool:
-        """Handler for Email notifications
+        """
+        Handler for Email notifications
 
         Returns:
             Fail: if no env variables were provided
