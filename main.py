@@ -69,9 +69,9 @@ def perform_mongodb_dump() -> dict:
 def main():
     """Combines all moving parts together and sends notifications if needed."""
 
-    # FixME Lets explicitly load environment variables in dev
-    env_path = Path('./dev.env')
-    load_dotenv(dotenv_path=env_path)
+    # # FixME Lets explicitly load environment variables in dev
+    # env_path = Path('./dev.env')
+    # load_dotenv(dotenv_path=env_path)
 
     result = str(perform_mongodb_dump())
 

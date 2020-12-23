@@ -9,7 +9,7 @@ mongo-dump is a backup utility for MongoDB compatible with Azure, AWS and GCP.
 ## Docker
 
 ````bash
-sudo docker run --name mongo-dump --env-file dev.env -d -v /tmp/mongo-dump:/tmp/mongo-dump mongo-dump:0.0.1-dev
+sudo docker run --name mongo-dump --env-file dev.env -d -v /tmp/mongo-dump:/tmp/mongo-dump -v ~/dev.json:/mongo-dump/key.json:ro mongo-dump:0.0.1-dev
 ````
 
 !Temporary 

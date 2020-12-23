@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-MAINTAINER Vladislav I. Kulbatski
+LABEL author="Vladislav I. Kulbatski" email="hi@exesse.org"
 
 WORKDIR /mongo-dump
 
