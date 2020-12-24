@@ -28,7 +28,9 @@ def main():
 
     cloud = S3()
 
-    cloud.upload_local_file(env_list, 'test.txt')
+    # cloud.upload_local_file(env_list, 'test.txt')
+
+    cloud.upload_local_folder('/tmp/mongo-dump/hannover-2020-12-24', '/tmp/mongo-dump/')
 
     # cloud.create_storage_clients()
     #

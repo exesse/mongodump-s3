@@ -164,6 +164,7 @@ class S3:
             if 'gcp' in self.providers:
                 gcp_s3 = self.providers['gcp']
                 try:
+                    # TODO set remote filename property
                     gcp_s3_client = gcp_s3.get_bucket(self.s3_bucket)
                     blob = gcp_s3_client.blob(local_file_path)
                     blob.upload_from_filename(local_file_path)
@@ -174,31 +175,28 @@ class S3:
         logging.error('"%s" does not exists', local_file_path)
         return False
 
-    def upload_local_folder(self, folder: str) -> bool:
+    def upload_local_folder(self, local_folder_path: str, remove_path_parent: str = '') -> bool:
         """Uploads local folder to remote S3 storage.
 
         Args:
-            folder: str, full path to the local folder to be uploaded
+            local_folder_path: str, full path to the local folder to be uploaded
+            remove_path_parent: str, optional, part that will be subtracted from full file path in the naming of remote file
 
         Returns:
             False: if folder upload failed, or folder doesn't exists
             True: if folder upload succeeded
         """
-        # dump_folder_parent = '/tmp/mongo-dump'
-        # remote_file_path = Path(file).relative_to(dump_folder_parent)
-        # """
-        # folder = self.get_dump_folder_path()
-        # try:
-        #     if not Path(folder).is_dir():
-        #         raise os.error
-        # except os.error:
-        #     logging.error('"%s" dump folder does not exists', folder)
-        #     return 1
-        # files = (str(file) for file in Path(folder).rglob('*') if file.is_file())
-        # for file in files:
-        #     self.upload_local_file(file)
-        # logging.info('"%s" was successfully uploaded to s3 storage', folder)
-        # return 0
-
-
-
+        if Path(local_folder_path).is_dir():
+            for local_file in Path(local_folder_path).rglob('*'):
+                if Path(local_file).is_file():
+                    if remove_path_parent == '':
+                        remote_file = local_file
+                    else:
+                        remote_file = local_file.relative_to(remove_path_parent)
+                    local_file_name = str(local_file)
+                    remote_file_name = str(remote_file)
+                    self.upload_local_file(local_file_name, remote_file_name)
+            logging.info('"%s" was successfully uploaded to s3 storage', local_folder_path)
+            return True
+        logging.error('"%s" folder does not exists. Please check.', local_folder_path)
+        return False
