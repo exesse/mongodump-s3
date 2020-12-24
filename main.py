@@ -23,8 +23,8 @@ def main():
     env_list = 'dev.env'
 
     load_env(env_list)  # FixMe
-    #
-    # result = str(MongoDump().start())
+
+    result = str(MongoDump().start())
 
     cloud = S3()
 

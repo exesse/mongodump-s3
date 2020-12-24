@@ -22,12 +22,19 @@ from .helpers import env_exists
 
 
 class S3:
-    """Implements S3 storage related operations."""
+    """Implements S3 storage related operations.
 
-    def __init__(self):
+    Attributes:
+        s3_bucket: name of the S3 compatible bucket container
+        providers: dict, contains S3 clients object generated from provided env parameters
+        do_not_create_buckets: bool, parameter if non-existing buckets should be created
+    """
+
+    def __init__(self, do_not_create_buckets: bool = False):
         """Initializes class S3 with bucket name."""
         self.s3_bucket = os.getenv('BUCKET')
-        self.providers = self.create_storage_clients()  #TODO decide if usage would be efficient
+        self.providers = self.create_storage_clients()
+        self.no_new_buckets = do_not_create_buckets
 
     def _make_azure_client(self):
         """Creates Azure client with provided credentials.
@@ -40,6 +47,7 @@ class S3:
         if env_exists(azure_connection_string):
             logging.info('Azure connection parameters found.')
             azure_s3 = AzureClient.from_connection_string(azure_connection_string)
+            # TODO list bucket and if bucket already exists return s3_connection
             try:
                 azure_s3.create_container(self.s3_bucket)
                 logging.info('Container "%s" successfully created on Azure.', self.s3_bucket)
@@ -64,6 +72,7 @@ class S3:
 
         if env_exists(aws_access_key_id) and env_exists(aws_secret_access_key):
             logging.info('AWS connection parameters found.')
+            # TODO list bucket and if bucket already exists return s3_connection
             if not env_exists(aws_region):
                 aws_region = 'us-west-2'
             aws_s3 = aws_client('s3', region_name=aws_region)
@@ -91,6 +100,7 @@ class S3:
 
         if env_exists(google_application_credentials) and Path(google_application_credentials).is_file():
             logging.info('GCP connection parameters found.')
+            # TODO list bucket and if bucket already exists return s3_connection
             if not env_exists(google_region):
                 google_region = 'us'
             try:
@@ -166,7 +176,7 @@ class S3:
                 try:
                     # TODO set remote filename property
                     gcp_s3_client = gcp_s3.get_bucket(self.s3_bucket)
-                    blob = gcp_s3_client.blob(local_file_path)
+                    blob = gcp_s3_client.blob(remote_file_path)
                     blob.upload_from_filename(local_file_path)
                     logging.info('"%s" was successfully uploaded to the "%s" bucket on GCP.', local_file_path, self.s3_bucket)
                 except GoogleClientError as error_response:

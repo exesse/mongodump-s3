@@ -13,6 +13,9 @@ from typing import Union
 from hurry.filesize import size, si
 from .helpers import env_exists
 
+# TODO change folder where to store dump
+# TODO Return full path for the dump folder in the dump result json
+
 
 class MongoDump:
     """Dumps Mongo database and prepares bson files for the transfer.
