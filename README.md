@@ -20,7 +20,9 @@ python3 main.py
 
 ### Docker
 ````bash
-sudo docker run --name mongo-dump --env-file dev.env -d -v /tmp/mongo-dump:/tmp/mongo-dump -v ~/dev.json:/mongo-dump/key.json:ro mongo-dump:0.0.1-dev
+sudo docker run --name mongodb -d -p 27017:27017 mongo:2.6.12
+
+sudo docker run --name mongo-dump --env-file dev.env -v /tmp/mongo-dump:/tmp/mongo-dump -v ~/dev.json:/mongo-dump/key.json:ro mongo-dump:0.0.1-dev
 ````
 
 !Temporary 

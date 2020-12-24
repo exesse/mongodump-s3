@@ -15,11 +15,10 @@ def load_env(env_file):
     load_dotenv(dotenv_path=env_path)
 
 
-def main(local=False):
+def main():
     """Combines all moving parts together and sends notifications if needed."""
 
-    if local:
-        load_env('./dev.env')  # FixMe
+    load_env('./dev.env')  # FixMe
 
     result = str(MongoDump().start())
 
@@ -35,4 +34,4 @@ def main(local=False):
 
 
 if __name__ == '__main__':
-    main(True)
+    main()
