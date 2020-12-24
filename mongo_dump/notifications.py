@@ -10,7 +10,6 @@ from requests import post
 
 from .helpers import env_exists, log
 
-
 log()
 
 
@@ -82,5 +81,6 @@ class Notifications:
                     smtp_relay)
             except OSError:
                 logging.error(
-                    'smtp relay server name "%s" could not be resolved over DNS. Please check.', smtp_relay)
+                    'smtp relay server name "%s" could not be resolved over DNS. Please check.',
+                    smtp_relay)
         return False
