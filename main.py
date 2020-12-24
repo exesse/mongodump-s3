@@ -20,19 +20,23 @@ def load_env(env_file):
 def main():
     """Combines all moving parts together and sends notifications if needed."""
 
-    load_env('./dev.env')  # FixMe
+    env_list = 'dev.env'
 
-    result = str(MongoDump().start())
+    load_env(env_list)  # FixMe
+    #
+    # result = str(MongoDump().start())
 
     cloud = S3()
 
-    cloud.create_storage_clients()
+    cloud.upload_local_file(env_list, 'test.txt')
 
-    report = Notifications(result)
-
-    report.send_telegram_notification()
-
-    report.send_email_notification()
+    # cloud.create_storage_clients()
+    #
+    # report = Notifications(result)
+    #
+    # report.send_telegram_notification()
+    #
+    # report.send_email_notification()
 
 
 if __name__ == '__main__':
