@@ -7,7 +7,6 @@ import logging
 from pathlib import Path
 from azure.storage.blob import BlobServiceClient as AzureClient
 from azure.core.exceptions import AzureError
-from azure.core.exceptions import ResourceExistsError as AzureResourceExistsError
 from boto3 import client as aws_client
 from botocore.exceptions import ClientError as AmazonClientError
 from google.cloud import storage as gcp_client
@@ -18,7 +17,7 @@ from .helpers import env_exists
 
 
 # TODO pytype, yapf and pylint
-# ToDo Write handler that uploads folder for each provider
+# TODO check if new s3 creation is allowed for gcp and aws and make methods consistent across providers
 
 
 class S3:
@@ -27,14 +26,14 @@ class S3:
     Attributes:
         s3_bucket: name of the S3 compatible bucket container
         providers: dict, contains S3 clients object generated from provided env parameters
-        do_not_create_buckets: bool, parameter if non-existing buckets should be created
+        create_bucket: bool, parameter specifies if non-existing buckets should be created
     """
 
-    def __init__(self, do_not_create_buckets: bool = False):
+    def __init__(self, create_buckets: bool = True):
         """Initializes class S3 with bucket name."""
+        self.create_bucket = create_buckets
         self.s3_bucket = os.getenv('BUCKET')
         self.providers = self.create_storage_clients()
-        self.no_new_buckets = do_not_create_buckets
 
     def _make_azure_client(self):
         """Creates Azure client with provided credentials.
@@ -47,16 +46,17 @@ class S3:
         if env_exists(azure_connection_string):
             logging.info('Azure connection parameters found.')
             azure_s3 = AzureClient.from_connection_string(azure_connection_string)
-            # TODO list bucket and if bucket already exists return s3_connection
-            try:
-                azure_s3.create_container(self.s3_bucket)
-                logging.info('Container "%s" successfully created on Azure.', self.s3_bucket)
-                return azure_s3
-            except AzureResourceExistsError:
+            azure_containers = [container.name for container in azure_s3.list_containers()]
+            if self.s3_bucket in azure_containers:
                 logging.info('Container "%s" already exists on Azure and owned by you.', self.s3_bucket)
                 return azure_s3
-            except AzureError as error_response:
-                logging.error(error_response)
+            if self.create_bucket:
+                try:
+                    azure_s3.create_container(self.s3_bucket)
+                    logging.info('Container "%s" successfully created on Azure.', self.s3_bucket)
+                    return azure_s3
+                except AzureError as error_response:
+                    logging.error(error_response)
         return False
 
     def _make_aws_client(self):
@@ -118,8 +118,12 @@ class S3:
                 logging.error(error_response)
         return False
 
-    def create_storage_clients(self):
-        """Creates client connections from env for the cloud to be used."""
+    def create_storage_clients(self) -> dict:
+        """Creates client connections from env for the cloud to be used.
+
+        Returns:
+            providers: dict, containing provider specific s3-storage clients
+        """
         providers = {}
         azure_s3 = self._make_azure_client()
         aws_s3 = self._make_aws_client()
@@ -174,7 +178,6 @@ class S3:
             if 'gcp' in self.providers:
                 gcp_s3 = self.providers['gcp']
                 try:
-                    # TODO set remote filename property
                     gcp_s3_client = gcp_s3.get_bucket(self.s3_bucket)
                     blob = gcp_s3_client.blob(remote_file_path)
                     blob.upload_from_filename(local_file_path)

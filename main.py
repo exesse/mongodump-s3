@@ -1,5 +1,6 @@
 """mongo-dump is a S3 storage compatible backup utility for MongoDB."""
 
+
 from pathlib import Path
 from dotenv import load_dotenv
 from mongo_dump import MongoDump, S3, Notifications, log
@@ -28,9 +29,9 @@ def main():
 
     cloud = S3()
 
-    # cloud.upload_local_file(env_list, 'test.txt')
+    cloud.upload_local_file(env_list, 'test.txt')
 
-    cloud.upload_local_folder('/tmp/mongo-dump/hannover-2020-12-24', '/tmp/mongo-dump/')
+    # cloud.upload_local_folder('/tmp/mongo-dump/hannover-2020-12-24', '/tmp/mongo-dump/')
 
     # cloud.create_storage_clients()
     #
