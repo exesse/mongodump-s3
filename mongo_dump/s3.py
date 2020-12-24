@@ -2,22 +2,21 @@
 
 
 import os
-import json
 import logging
-import datetime
+
 from pathlib import Path
+from azure.storage.blob import BlobServiceClient as AzureClient
 from boto3 import client as aws_client
 from google.cloud import storage as gcp_client
-from azure.storage.blob import BlobServiceClient as AzureClient
+
+from azure.core.exceptions import AzureError
+from azure.core.exceptions import ResourceExistsError as AzureResourceExistsError
 from botocore.exceptions import ClientError as AmazonClientError
 from google.cloud.exceptions import ClientError as GoogleClientError
 from google.auth.exceptions import DefaultCredentialsError as GoogleAuthError
-from azure.core.exceptions import AzureError
-from azure.core.exceptions import ResourceExistsError as AzureResourceExistsError
-from .helpers import env_exists, log
 
+from .helpers import env_exists
 
-log()
 
 # ToDo Write methods for each provider with sync upload of a file to the bucket
 # ToDo Write handler that uploads folder for each provider
@@ -29,9 +28,8 @@ class S3:
     def __init__(self):
         """Initializes class S3 with bucket name."""
         self.s3_bucket = os.getenv('BUCKET')
-        self.mongo_dump_key = f'/tmp/mongo-dump/gcs-key-{str(datetime.date.today())}.json'
 
-    def __make_azure_client(self):
+    def _make_azure_client(self):
         """Creates Azure client with provided credentials.
 
         Returns:
@@ -53,7 +51,7 @@ class S3:
                 logging.error(error_response)
         return False
 
-    def __make_aws_client(self):
+    def _make_aws_client(self):
         """Creates AWS boto3 client with provided credentials.
 
         Returns:
@@ -80,7 +78,7 @@ class S3:
                 logging.error(error_response)
         return False
 
-    def __make_gcp_client(self):
+    def _make_gcp_client(self):
         """Creates GCP client with provided credentials.
 
         Returns:
@@ -112,9 +110,9 @@ class S3:
     def create_storage_clients(self):
         """Creates client connections from env for the cloud to be used."""
         providers = dict()
-        azure_s3 = self.__make_azure_client()
-        aws_s3 = self.__make_aws_client()
-        gcp_s3 = self.__make_gcp_client()
+        azure_s3 = self._make_azure_client()
+        aws_s3 = self._make_aws_client()
+        gcp_s3 = self._make_gcp_client()
         if azure_s3:
             providers['azure'] = azure_s3
         if aws_s3:

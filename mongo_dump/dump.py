@@ -11,9 +11,7 @@ from subprocess import Popen, PIPE
 from pathlib import Path
 from typing import Union
 from hurry.filesize import size, si
-from .helpers import env_exists, log
-
-log()
+from .helpers import env_exists
 
 
 class MongoDump:

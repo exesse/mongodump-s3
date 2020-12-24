@@ -2,7 +2,9 @@
 
 from pathlib import Path
 from dotenv import load_dotenv
-from mongo_dump import MongoDump, S3, Notifications
+from mongo_dump import MongoDump, S3, Notifications, log
+
+log()
 
 
 # ToDo S3 upload here
