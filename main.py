@@ -27,19 +27,15 @@ def main():
 
     result = str(MongoDump().start())
 
-    cloud = S3()
+    cloud = S3(create_buckets=True)
 
-    cloud.upload_local_file(env_list, 'test.txt')
+    cloud.upload_local_folder('/tmp/mongo-dump/hannover-2020-12-24', '/tmp/mongo-dump/')
 
-    # cloud.upload_local_folder('/tmp/mongo-dump/hannover-2020-12-24', '/tmp/mongo-dump/')
-
-    # cloud.create_storage_clients()
-    #
     # report = Notifications(result)
-    #
+
     # report.send_telegram_notification()
     #
-    # report.send_email_notification()
+    # # report.send_email_notification()
 
 
 if __name__ == '__main__':
