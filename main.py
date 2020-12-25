@@ -3,7 +3,7 @@
 
 from pathlib import Path
 from dotenv import load_dotenv
-from mongo_dump import MongoDump, S3, Notifications, log
+from mongo_dump_s3 import MongoDump, S3, Notifications, log
 
 log()
 
