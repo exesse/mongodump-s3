@@ -206,7 +206,8 @@ class S3:
                     aws_s3.upload_file(local_file_path, self.s3_bucket,
                                        remote_file_path)
                     logging.info(
-                        '"%s" was successfully uploaded to AWS and stored as "%s" on "%s" bucket.',
+                        '"%s" was successfully uploaded to AWS '
+                        'and stored as "%s" on "%s" bucket.',
                         local_file_path, remote_file_path, self.s3_bucket)
                 except AmazonClientError as error_response:
                     logging.error(error_response)
@@ -217,7 +218,8 @@ class S3:
                     blob = gcp_s3_client.blob(remote_file_path)
                     blob.upload_from_filename(local_file_path)
                     logging.info(
-                        '"%s" was successfully uploaded to GCP and stored as "%s" on "%s" bucket.',
+                        '"%s" was successfully uploaded to GCP '
+                        'and stored as "%s" on "%s" bucket.',
                         local_file_path, remote_file_path, self.s3_bucket)
                 except GoogleClientError as error_response:
                     logging.error(error_response)
