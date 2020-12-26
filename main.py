@@ -25,17 +25,21 @@ def main():
 
     load_env(env_list)  # FixMe
 
-    result = str(MongoDump().start())
+    result = MongoDump().start()
+
+    dump_path = str(result['path'])
+
+    dump_path_parent = str(Path(dump_path).parent)
 
     cloud = S3(create_buckets=True)
 
-    cloud.upload_local_folder('/tmp/mongo-dump/hannover-2020-12-24', '/tmp/mongo-dump/')
+    cloud.upload_local_folder(dump_path, dump_path_parent)
 
-    # report = Notifications(result)
+    report = Notifications(str(result))
 
-    # report.send_telegram_notification()
-    #
-    # # report.send_email_notification()
+    report.send_telegram_notification()
+
+    # report.send_email_notification()
 
 
 if __name__ == '__main__':

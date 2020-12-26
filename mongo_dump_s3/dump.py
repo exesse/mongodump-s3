@@ -22,22 +22,23 @@ class MongoDump:
 
     Attributes:
         mongo_uri: connection string in format
-
-        "mongodb://user:password@server:[port]/?replicaSet=NAME&authSource=admin"
-
+                   "mongodb://user:password@server:[port]/?replicaSet=NAME&authSource=admin"
+        output_folder: path to where local dump will be performed
     """
 
     def __init__(self):
         """Initializes MongoDump with connection URI."""
-        mongo_uri = os.getenv('MONGO_URI')
-        output_folder_name = os.getenv('OUTPUT_FOLDER')
-        if not env_exists(mongo_uri):
+        self.mongo_uri = os.getenv('MONGO_URI')
+
+        if not env_exists(self.mongo_uri):
             logging.error('No MongoDB connection URI provided. Nothing to do - exiting now.')
             sys.exit(1)
-        self.mongo_uri = mongo_uri
-        if not env_exists(output_folder_name):
-            output_folder_name = 'dump'
-        self.output_folder = f'/tmp/mongo-dump/{output_folder_name}'
+
+        mongo_output_folder = os.getenv('MONGO_OUTPUT_FOLDER')
+
+        if not env_exists(mongo_output_folder):
+            mongo_output_folder = 'dump'
+        self.output_folder = Path.absolute(Path(mongo_output_folder))
 
     def strip_mongo_uri(self) -> list:
         """Strips mongo_uri to get list of mongodb servers provided.
