@@ -92,7 +92,19 @@ def startup_options():
 
     # Section: notification options
     notification = cli_parser.add_argument_group('notification options')
-    # TODO
+    notification.add_argument('--email', action='store', metavar='<user@example.com>',
+                              help='email address which to notify upon the result.')
+    notification.add_argument('--smtp', action='store', metavar='<mail-server.example.com>',
+                              help='SMTP relay server to use, defaults to \'localhost\'.')
+    notification.add_argument('--telegram', action='store', type=str,
+                              metavar='<telegram_token> <telegram_chat_id>',
+                              help='Telegram API token and chat id to be used for notification. '
+                                   ' See more: https://core.telegram.org/bots/api.')
+
+    # Section: feedback
+    feedback = cli_parser.add_argument_group('Feedback')
+    feedback.add_argument('Please star project on GitHub: https://github.com/exesse/mongodump-s3')
+    feedback.add_argument('Email bug reports, questions, discussions to mailto:hi@exesse.org')
 
     return cli_parser.parse_args()
 
