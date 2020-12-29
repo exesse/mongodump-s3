@@ -8,7 +8,7 @@ from socket import gaierror
 from email.message import EmailMessage
 from requests import post
 
-from .helpers import env_exists
+from .mongodump_s3 import env_exists
 
 
 class Notifications:

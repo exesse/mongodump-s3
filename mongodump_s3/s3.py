@@ -13,7 +13,7 @@ from google.cloud import storage as gcp_client
 from google.cloud.exceptions import ClientError as GoogleClientError
 from google.auth.exceptions import DefaultCredentialsError as GoogleAuthError
 
-from .helpers import env_exists
+from .mongodump_s3 import env_exists
 
 
 class S3:
