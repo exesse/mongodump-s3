@@ -1,8 +1,8 @@
 # mongo-dump
 [![release Actions Status](https://github.com/exesse/mongo-dump-s3/workflows/release/badge.svg)](https://github.com/exesse/mongo-dump-s3/actions)
 [![build Actions Status](https://github.com/exesse/mongo-dump-s3/workflows/build/badge.svg)](https://github.com/exesse/mongo-dump-s3/actions)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0484d1d38b5d41318f0980126a1c45a9)](https://www.codacy.com/gh/exesse/mongo-dump-s3/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=exesse/mongo-dump-s3&amp;utm_campaign=Badge_Grade)
-[![DeepSource](https://deepsource.io/gh/exesse/mongo-dump-s3.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/exesse/mongo-dump-s3/?ref=repository-badge)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/0484d1d38b5d41318f0980126a1c45a9)](https://www.codacy.com/gh/exesse/mongodump-s3/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=exesse/mongodump-s3&amp;utm_campaign=Badge_Grade)
+[![DeepSource](https://deepsource.io/gh/exesse/mongodump-s3.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/exesse/mongodump-s3/?ref=repository-badge)
 
  
 Backup utility for MongoDB. Compatible with Azure, Amazon Web Services and Google Cloud Platform.
