@@ -158,12 +158,12 @@ class MongoDump:
             dump_folder_name = f'{str(self.output_folder)}-{str(datetime.date.today())}'
             if Path(dump_folder_name).is_dir():
                 logging.warning(
-                    'Performing cleanup steps - "%s" exists - removing now.',
+                    'Performing cleanup steps - "%s" removed.',
                     dump_folder_name)
                 shutil.rmtree(dump_folder_name)
             if Path(str(self.output_folder)).is_dir():
                 logging.warning(
-                    'Performing cleanup steps - "%s" exists - removing now.',
+                    'Performing cleanup steps - "%s" removed.',
                     str(self.output_folder))
                 shutil.rmtree(dump_folder_name)
             return True
