@@ -190,8 +190,8 @@ class S3:
                         blob.upload_blob(data)
                     logging.info(
                         '"%s" was successfully uploaded to Azure '
-                        'and stored as "%s" on "%s" bucket.',
-                        local_file_path, remote_file_path, self.s3_bucket)
+                        'and stored as "%s" on "%s" bucket.', local_file_path,
+                        remote_file_path, self.s3_bucket)
                 except AzureError as error_response:
                     exists_error = 'The specified blob already exists.'
                     if exists_error in str(error_response):
@@ -207,8 +207,8 @@ class S3:
                                        remote_file_path)
                     logging.info(
                         '"%s" was successfully uploaded to AWS '
-                        'and stored as "%s" on "%s" bucket.',
-                        local_file_path, remote_file_path, self.s3_bucket)
+                        'and stored as "%s" on "%s" bucket.', local_file_path,
+                        remote_file_path, self.s3_bucket)
                 except AmazonClientError as error_response:
                     logging.error(error_response)
             if 'gcp' in self.providers:
@@ -219,8 +219,8 @@ class S3:
                     blob.upload_from_filename(local_file_path)
                     logging.info(
                         '"%s" was successfully uploaded to GCP '
-                        'and stored as "%s" on "%s" bucket.',
-                        local_file_path, remote_file_path, self.s3_bucket)
+                        'and stored as "%s" on "%s" bucket.', local_file_path,
+                        remote_file_path, self.s3_bucket)
                 except GoogleClientError as error_response:
                     logging.error(error_response)
             return True

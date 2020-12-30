@@ -16,6 +16,11 @@ logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=lo
 
 
 class MongoDumpS3:
+    """Implement CLI and handles command execution.
+
+    Attributes:
+        options:
+    """
 
     __version__ = '0.0.1-dev'
 
