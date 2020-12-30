@@ -8,7 +8,7 @@ from socket import gaierror
 from email.message import EmailMessage
 from requests import post
 
-from .mongodump_s3 import env_exists
+from .helpers import env_exists
 
 
 class Notifications:
@@ -25,6 +25,8 @@ class Notifications:
             message: str, plain text body that will be sent
         """
         self.message = message
+        self.send_email_notification()
+        self.send_telegram_notification()
 
     def send_telegram_notification(self) -> bool:
         """"Handler for Telegram notifications.

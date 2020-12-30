@@ -13,7 +13,7 @@ from google.cloud import storage as gcp_client
 from google.cloud.exceptions import ClientError as GoogleClientError
 from google.auth.exceptions import DefaultCredentialsError as GoogleAuthError
 
-from .mongodump_s3 import env_exists
+from .helpers import env_exists
 
 
 class S3:
@@ -30,6 +30,20 @@ class S3:
         self.create_bucket = create_buckets
         self.s3_bucket = os.getenv('MONGO_DUMP_BUCKET')
         self.providers = self.create_storage_clients()
+        print('in S3 module now')
+        logging.debug('MONGO_URI set to "%s"', os.getenv('MONGO_URI'))
+        logging.debug('MONGO_OUTPUT_FOLDER set to "%s"', os.getenv('MONGO_OUTPUT_FOLDER'))
+        logging.debug('MONGO_DUMP_BUCKET set to "%s"', os.getenv('MONGO_DUMP_BUCKET'))
+        logging.debug('EMAIL set to "%s"', os.getenv('EMAIL'))
+        logging.debug('SMTP_RELAY set to "%s"', os.getenv('SMTP_RELAY'))
+        logging.debug('TELEGRAM_TOKEN set to "%s"', os.getenv('TELEGRAM_TOKEN'))
+        logging.debug('TELEGRAM_CHAT_ID set to "%s"', os.getenv('TELEGRAM_CHAT_ID'))
+        logging.debug('AZURE_STORAGE_CONNECTION_STRING set to "%s"', os.getenv('AZURE_STORAGE_CONNECTION_STRING'))
+        logging.debug('AWS_REGION set to "%s"', os.getenv('AWS_REGION'))
+        logging.debug('AWS_ACCESS_KEY_ID set to "%s"', os.getenv('AWS_ACCESS_KEY_ID'))
+        logging.debug('AWS_SECRET_ACCESS_KEY set to "%s"', os.getenv('AWS_SECRET_ACCESS_KEY'))
+        logging.debug('GOOGLE_APPLICATION_CREDENTIALS set to "%s"', os.getenv('GOOGLE_APPLICATION_CREDENTIALS'))
+        logging.debug('GOOGLE_REGION set to "%s"', os.getenv('GOOGLE_REGION'))
 
     def _make_azure_client(self) -> Any:
         """Creates Azure client with provided credentials.

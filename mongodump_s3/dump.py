@@ -11,10 +11,7 @@ from subprocess import Popen, PIPE
 from pathlib import Path
 from typing import Union
 from hurry.filesize import size, si
-from .mongodump_s3 import env_exists
-
-# TODO change folder where to store the dump
-# TODO Return full path for the dump folder in the dump result json
+from .helpers import env_exists
 
 
 class MongoDump:
@@ -136,7 +133,27 @@ class MongoDump:
             return False
         return dump_folder_name
 
-    def start(self) -> dict:
+    def cleanup(self):
+        """Performs cleanup steps on exist or failure.
+
+        Returns:
+            True: if successful
+            False: in case of failure
+        """
+        try:
+            dump_folder_name = f'{str(self.output_folder)}-{str(datetime.date.today())}'
+            if Path(dump_folder_name).is_dir():
+                logging.warning('Performing cleanup steps - "%s" exists - removing now.', dump_folder_name)
+                shutil.rmtree(dump_folder_name)
+            if Path(str(self.output_folder)).is_dir():
+                logging.warning('Performing cleanup steps - "%s" exists - removing now.', str(self.output_folder))
+                shutil.rmtree(dump_folder_name)
+            return True
+        except OSError:
+            logging.error('Application failed to perform cleanup steps')
+            return False
+
+    def exec(self) -> dict:
         """Wraps all class methods for single start
 
         Returns:
