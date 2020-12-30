@@ -304,7 +304,6 @@ class MongoDumpS3:
             telegram = self._str_to_dict(self.options.telegram)
             if not self._set_env(telegram):
                 return False
-
         self._debug_env()
         return True
 
