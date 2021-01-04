@@ -83,7 +83,7 @@ class MongoDump:
                     if connection_state == 0:
                         return True
                 except socket.gaierror:
-                    logging.info('MongoDB is not serving at "%s" port "%s".',
+                    logging.error('MongoDB is not serving at "%s" port "%s".',
                                  mongo_host, str(mongo_port))
         return False
 
@@ -186,5 +186,5 @@ class MongoDump:
             }
         else:
             result = {'dump': str(dump_state)}
-        logging.info(str(result))
+        logging.debug(str(result))
         return result
