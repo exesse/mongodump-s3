@@ -35,7 +35,7 @@ setup(
         ],
     entry_points={
         "console_scripts": [
-            "realpython=mongodump_s3.__main__:main",
+            "realpython=mongodump-s3.__main__:main",
         ]
     },
 )
