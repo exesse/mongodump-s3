@@ -13,4 +13,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
  && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install -r requirments.txt
 
-ENTRYPOINT [ "python3", "./main.py", "--help" ]
+ENTRYPOINT [ "python3", "./main.py"]
