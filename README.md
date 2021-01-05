@@ -6,24 +6,18 @@
  
 Backup utility for MongoDB. Compatible with Azure, Amazon Web Services and Google Cloud Platform.
 
-## Install
-### Local
+## Installation
 Make sure that original MongoDB Database Tools are installed. Please follow instruction on [the official page](https://www.mongodb.com/try/download/database-tools) for platform specific installation.
 Also make sure that `mongodump` command is in your PATH.
 ````bash
 pip install mongodump-s3
 ````
 
-### Docker
-````bash
-sudo docker pull exesse/mongodump-s3
-````
-
 ## Usage
-There three possible ways to use the utility:
--  Through setting environment variables
--  By passing env file to the tool
--  Or by passing individual flags
+`mongodump-s3` could be used as command line tool or as Docker service. There are also three possible ways to pass parameters to the utility:
+  - Through setting environment variables
+  - By passing env file to the tool
+  - Or by passing individual flags
 
 Please refer to `sample.env` [example](https://github.com/exesse/mongodump-s3/blob/main/sample.env) for all possible env options.
 
