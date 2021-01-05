@@ -1,10 +1,9 @@
 # mongo-dump
-[![PyPI Version](https://img.shields.io/pypi/v/mongodump-s3)](https://pypi.org/project/mongodump-s3/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0484d1d38b5d41318f0980126a1c45a9)](https://www.codacy.com/gh/exesse/mongodump-s3/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=exesse/mongodump-s3&amp;utm_campaign=Badge_Grade)
 [![DeepSource](https://deepsource.io/gh/exesse/mongodump-s3.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/exesse/mongodump-s3/?ref=repository-badge)
 [![release Actions Status](https://github.com/exesse/mongo-dump-s3/workflows/release/badge.svg)](https://github.com/exesse/mongo-dump-s3/actions)
 [![build Actions Status](https://github.com/exesse/mongo-dump-s3/workflows/build/badge.svg)](https://github.com/exesse/mongo-dump-s3/actions)
-[![build DockerHub Status](https://img.shields.io/docker/build/exesse/mongodump-s3)](https://hub.docker.com/repository/docker/exesse/mongodump-s3/builds)
+[![PyPI Version](https://img.shields.io/pypi/v/mongodump-s3)](https://pypi.org/project/mongodump-s3/)
 [![Docker Image Size](https://img.shields.io/docker/image-size/exesse/mongodump-s3)](https://hub.docker.com/repository/docker/exesse/mongodump-s3)
  
 Backup utility for MongoDB. Compatible with Azure, Amazon Web Services and Google Cloud Platform.
