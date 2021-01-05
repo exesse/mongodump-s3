@@ -23,7 +23,7 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
     ],
-    packages=["mongodump-s3"],
+    packages=["mongodump_s3"],
     include_package_data=False,
     install_requires=[
         "requests==2.25.1",
@@ -35,7 +35,7 @@ setup(
         ],
     entry_points={
         "console_scripts": [
-            "realpython=mongodump-s3.__main__:main",
+            "realpython=mongodump_s3.__main__:main",
         ]
     },
 )
