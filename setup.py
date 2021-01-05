@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="mongodump-s3",
-    version="1.0.4",
+    version="1.0.5",
     description="Read the latest Real Python tutorials",
     long_description=README,
     long_description_content_type="text/markdown",
