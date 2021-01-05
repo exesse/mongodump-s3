@@ -364,11 +364,13 @@ class MongoDumpS3:
             logging.info('Output properties were provided with startup flags.'
                          ' Masking related env vars now.')
         if self._check_cloud_flags():
-            logging.info('S3 connection properties were provided with startup flags.'
-                         ' Masking related env vars now.')
+            logging.info(
+                'S3 connection properties were provided with startup flags.'
+                ' Masking related env vars now.')
         if self._check_notifications_flags():
-            logging.info('Notification properties were provided with startup flags.'
-                         ' Masking related env vars now.')
+            logging.info(
+                'Notification properties were provided with startup flags.'
+                ' Masking related env vars now.')
         self.debug_env()
         return True
 
