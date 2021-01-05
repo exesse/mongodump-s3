@@ -6,6 +6,7 @@ on:
 jobs:
   push_to_pypi:
     name: Publish python package on release
+    runs-on: ubuntu-latest
     steps:
       - name: Publish package
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
