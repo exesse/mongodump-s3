@@ -15,9 +15,9 @@ pip install mongodump-s3
 
 ## Usage
 `mongodump-s3` could be used as command line tool or as Docker service. There are also three possible ways to pass parameters to the utility:
-  - Through setting environment variables
-  - By passing env file to the tool
-  - Or by passing individual flags
+-   Through setting environment variables
+-   By passing env file to the tool
+-   Or by passing individual flags
 
 Please refer to `sample.env` [example](https://github.com/exesse/mongodump-s3/blob/main/sample.env) for all possible env options.
 
