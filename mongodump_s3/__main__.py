@@ -1,6 +1,7 @@
 """Main module contains functions needed by mongodump-s3 package."""
 
 import os
+import sys
 import argparse
 import logging
 
@@ -8,14 +9,14 @@ from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
 
-from .s3 import S3
-from .dump import MongoDump
-from .notifications import Notifications
+from mongodump_s3 import S3
+from mongodump_s3 import MongoDump
+from mongodump_s3 import Notifications
+from mongodump_s3 import __version__
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
-# TODO logging debug/error on every env fail
 
 class MongoDumpS3:
     """Implement CLI and handles command execution.
@@ -24,15 +25,13 @@ class MongoDumpS3:
         options: startup options passed to the application
     """
 
-    __version__ = '0.0.1'
-
     def __init__(self):
         """Initializes MongoDumpS3 with startup options."""
         self.options = self._startup_options()
         self.exec()
 
-    @classmethod
-    def _startup_options(cls) -> argparse.Namespace:
+    @staticmethod
+    def _startup_options() -> argparse.Namespace:
         """Function implements CLI interface.
 
         Returns:
@@ -63,7 +62,7 @@ class MongoDumpS3:
         general.add_argument('-v',
                              '--version',
                              action='version',
-                             version=f'%(prog)s {cls.__version__}',
+                             version=f'%(prog)s {__version__}',
                              help='print the tool version and exit')
 
         # Section: output options
@@ -247,7 +246,7 @@ class MongoDumpS3:
                       os.getenv('GOOGLE_APPLICATION_CREDENTIALS'))
         logging.debug('GOOGLE_REGION set to "%s"', os.getenv('GOOGLE_REGION'))
 
-    def _check_env_file(self):
+    def _check_env_file(self) -> bool:
         """Checks if env-file was passed and clears env if True.
 
         Returns:
@@ -263,26 +262,32 @@ class MongoDumpS3:
             logging.error(
                 'Provided env file "%s" does not exists. Please check.',
                 self.options.env)
+
         return False
 
-    def _check_output_flags(self):
+    def _check_output_flags(self) -> bool:
         """Checks for passed output related startup flags.
 
         Returns:
             True: if successful
             False: in case of failure
         """
-        if self.options.bucket:
+        if self.options.bucket or self.options.out:
             bucket = {'MONGO_DUMP_BUCKET': self.options.bucket}
-            if not self._set_env(bucket):
-                return False
-        if self.options.out:
             out = {'MONGO_OUTPUT_FOLDER': self.options.out}
-            if not self._set_env(out):
-                return False
-        return True
 
-    def _check_cloud_flags(self):
+            if not self._set_env(bucket):
+                logging.error('Failed to set variable "%s"', bucket)
+                return False
+            if not self._set_env(out):
+                logging.error('Failed to set variable "%s"', out)
+                return False
+
+            return True
+
+        return False
+
+    def _check_cloud_flags(self) -> bool:
         """Checks for S3 cloud specific flags.
 
         Returns:
@@ -291,21 +296,27 @@ class MongoDumpS3:
         """
         if self.options.azure or self.options.aws or self.options.gcp:
             if self.mask_env('cloud'):
+
                 if self.options.azure:
                     azure = {
                         'AZURE_STORAGE_CONNECTION_STRING': self.options.azure
                     }
                     if not self._set_env(azure):
+                        logging.error('Failed to set variable "%s"', azure)
                         return False
                 if self.options.gcp:
                     gcp = self._str_to_dict(self.options.gcp)
                     if not self._set_env(gcp):
+                        logging.error('Failed to set variable "%s"', gcp)
                         return False
                 if self.options.aws:
                     aws = self._str_to_dict(self.options.aws)
                     if not self._set_env(aws):
+                        logging.error('Failed to set variable "%s"', aws)
                         return False
+
                 return True
+
         return False
 
     def _check_notifications_flags(self) -> bool:
@@ -315,19 +326,24 @@ class MongoDumpS3:
             True: if successful
             False: in case of failure
         """
-        if self.options.email:
+        if self.options.email or self.options.smtp or self.options.telegram:
             email = {'EMAIL': self.options.email}
-            if not self._set_env(email):
-                return False
-        if self.options.smtp:
             smtp = {'SMTP_RELAY': self.options.smtp}
-            if not self._set_env(smtp):
-                return False
-        if self.options.telegram:
             telegram = self._str_to_dict(self.options.telegram)
-            if not self._set_env(telegram):
+
+            if not self._set_env(email):
+                logging.error('Failed to set variable "%s"', email)
                 return False
-        return True
+            if not self._set_env(smtp):
+                logging.error('Failed to set variable "%s"', smtp)
+                return False
+            if not self._set_env(telegram):
+                logging.error('Failed to set variable "%s"', telegram)
+                return False
+
+            return True
+
+        return False
 
     def _prepare_app_env(self) -> bool:
         """Prepares working environment.
@@ -357,7 +373,7 @@ class MongoDumpS3:
         return True
 
     def exec(self) -> bool:
-        """Wraps complete package to end-user.
+        """Helper function that executes class MongoDUmpS3.
 
         Returns:
             True: if successful
@@ -391,13 +407,15 @@ class MongoDumpS3:
                 mongodump.cleanup()
                 return True
             mongodump.cleanup()
-            return False
+        return False
 
 
 def main():
-    """"""
-    # TODO parse return for MongoDump exec and do sys.exit()
-    App = MongoDumpS3()
+    """Wraps complete package to end-user."""
+    run_app = MongoDumpS3()
+    if run_app:
+        sys.exit(0)
+    sys.exit(1)
 
 
 if __name__ == '__main__':
