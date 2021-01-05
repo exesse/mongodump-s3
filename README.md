@@ -3,7 +3,6 @@
 [![build Actions Status](https://github.com/exesse/mongo-dump-s3/workflows/build/badge.svg)](https://github.com/exesse/mongo-dump-s3/actions)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/0484d1d38b5d41318f0980126a1c45a9)](https://www.codacy.com/gh/exesse/mongodump-s3/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=exesse/mongodump-s3&amp;utm_campaign=Badge_Grade)
 [![DeepSource](https://deepsource.io/gh/exesse/mongodump-s3.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/exesse/mongodump-s3/?ref=repository-badge)
-
  
 Backup utility for MongoDB. Compatible with Azure, Amazon Web Services and Google Cloud Platform.
 
@@ -22,13 +21,13 @@ sudo docker pull exesse/mongodump-s3
 
 ## Usage
 There three possible ways to use the utility:
-- Through setting environment variables
-- By passing env file to the tool
-- Or by passing individual flags
+-  Through setting environment variables
+-  By passing env file to the tool
+-  Or by passing individual flags
 
 Please refer to `sample.env` [example](https://github.com/exesse/mongodump-s3/blob/main/sample.env) for all possible env options.
 
-### Local
+### Command line
 ```bash
 $ mongodump-s3 --help
 usage: mongodump-s3 <options>
@@ -68,9 +67,6 @@ notification options:
                         SMTP relay server to use, defaults to 'localhost'
   --telegram "<telegram_token=value> <telegram_chat_id=value>"
                         Telegram API token and chat id to be used for notification. See more: https://core.telegram.org/bots/api
-
-Email bug reports, questions, discussions to mailto:hi@exesse.org. Please star project on GitHub: https://github.com/exesse/mongodump-s3
-(venv) kulbatski@intern.chipcytometry.com@zkwdesktop11:~/Bin/mongo-dump$ 
 ```
 
 ### Docker
