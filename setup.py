@@ -27,7 +27,7 @@ setup(
     include_package_data=False,
     install_requires=[
         "requests==2.25.1",
-        "hurry.filesize==0.9",
+        "hurry.filesize",
         "python-dotenv==0.15.0",
         "azure-storage-blob==12.6.0",
         "boto3==1.16.48",
