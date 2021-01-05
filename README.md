@@ -9,6 +9,9 @@ Backup utility for MongoDB. Compatible with Azure, Amazon Web Services and Googl
 
 ## Usage
 
+Make sure that original MongoDB Database Tools are installed. Please follow instruction on [the official page](https://www.mongodb.com/try/download/database-tools) for platform specific installation.
+Also make sure that `mongodump` command is in your path.
+
 ### Local
 !Write installer
 ```bash

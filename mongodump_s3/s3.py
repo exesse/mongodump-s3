@@ -28,7 +28,10 @@ class S3:
     def __init__(self, create_buckets: bool = True):
         """Initializes class S3 with bucket name."""
         self.create_bucket = create_buckets
-        self.s3_bucket = os.getenv('MONGO_DUMP_BUCKET')
+        s3_bucket = os.getenv('MONGO_DUMP_BUCKET')
+        if not env_exists(s3_bucket):
+            s3_bucket = 'mongodump'
+        self.s3_bucket = s3_bucket
         self.providers = self.create_storage_clients()
 
     def _make_azure_client(self) -> Any:

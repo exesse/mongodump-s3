@@ -134,7 +134,7 @@ class MongoDump:
             False: in case of failure
         """
         if self._check_mongo_socket():
-            cmd = f'/bin/mongodump --uri="{self.mongo_uri}" --gzip --out {self.output_folder}'
+            cmd = f'mongodump --uri="{self.mongo_uri}" --gzip --out {self.output_folder}'
             args = shlex.split(cmd)
             dump_process = Popen(args, stdout=PIPE)
             with dump_process.stdout:
