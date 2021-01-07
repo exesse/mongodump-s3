@@ -67,15 +67,15 @@ notification options:
 
 ### Docker
 ````bash
-sudo docker run --name mongo-dump [Optional: --env-file sample.env] exesse/mongo-dump:latest [Optional: startup flags]
+sudo docker run --name mongo-dump [Optional: --env-file sample.env] exesse/mongodump-s3:latest [Optional: startup flags]
 ````
 
 In case you need to pass GCP service account key please mount the key inside container and simply specify `GOOGLE_APPLICATION_CREDENTIALS=/mongo-dump/key.json`.
 ```bash
-sudo docker run --name mongo-dump-gcp \
+sudo docker run --name mongodump-gcp \
     --env-file sample.env \
-    -v ~/dev.json:/mongo-dump/key.json:ro \
-    exesse/mongo-dump:latest 
+    -v ~/dev.json:/mongodump/key.json:ro \
+    exesse/mongodump-s3:latest 
 ```
 
 ## Feedback
