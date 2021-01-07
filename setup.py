@@ -10,12 +10,12 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="mongodump-s3",
-    version="1.0.2",
+    version="1.0.3",
     description="Read the latest Real Python tutorials",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/exesse/mongodump-s3",
-    author="Real Python",
+    author="Vladislav I. Kulbatski ",
     author_email="hi@exesse.org",
     license="MIT",
     classifiers=[
@@ -35,7 +35,7 @@ setup(
         ],
     entry_points={
         "console_scripts": [
-            "realpython=mongodump_s3.__main__:main",
+            "mongodump-s3=mongodump_s3.__main__:main",
         ]
     },
 )

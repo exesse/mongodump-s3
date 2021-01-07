@@ -403,8 +403,8 @@ class MongoDumpS3:
             if s3_upload_result:
                 end = str(datetime.now() - start)[:-7]
                 success = '\U0001F4A5 mongodump-s3 finished the job.' \
-                          '\n\U0001F9BADump size is %s.' \
-                          '\n\U0001F312Processing time is %s' % (dump_size, end)
+                          '\n\U0001F9BA Dump size is %s.' \
+                          '\n\U0001F312 Processing time is %s' % (dump_size, end)
                 Notifications(success)
                 mongodump.cleanup()
                 return True
