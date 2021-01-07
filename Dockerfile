@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-LABEL version="1.0.3" author="Vladislav I. Kulbatski" email="hi@exesse.org"
+LABEL version="1.1.0" author="Vladislav I. Kulbatski" email="hi@exesse.org"
 
 WORKDIR /mongo-dump
 
@@ -9,6 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
  mongo-tools=3.6.3-0ubuntu1\
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
-RUN python3 -m pip install mongodump-s3==1.0.3
+RUN python3 -m pip install mongodump-s3==1.1.0
 
 ENTRYPOINT ["mongodump_s3"]
