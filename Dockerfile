@@ -11,4 +11,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends\
  && rm -rf /var/lib/apt/lists/*
 RUN python3 -m pip install mongodump-s3==1.0.3
 
-ENTRYPOINT [ "python3", "-m", "mongodump_s3"]
+ENTRYPOINT ["mongodump_s3"]
