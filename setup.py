@@ -30,7 +30,7 @@ setup(
         "requests==2.25.1",
         "hurry.filesize==0.9",
         "python-dotenv==0.15.0",
-        "azure-storage-blob==12.7.1",
+        "azure-storage-blob==12.8.1",
         "boto3==1.16.63",
         "google-cloud-storage==1.35.0"
         ],
