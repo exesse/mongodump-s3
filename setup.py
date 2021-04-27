@@ -32,7 +32,7 @@ setup(
         "python-dotenv==0.15.0",
         "azure-storage-blob==12.7.1",
         "boto3==1.16.63",
-        "google-cloud-storage==1.35.0"
+        "google-cloud-storage==1.38.0"
         ],
     entry_points={
         "console_scripts": [
