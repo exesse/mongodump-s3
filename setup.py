@@ -29,7 +29,7 @@ setup(
     install_requires=[
         "requests==2.25.1",
         "hurry.filesize==0.9",
-        "python-dotenv==0.15.0",
+        "python-dotenv==0.17.1",
         "azure-storage-blob==12.7.1",
         "boto3==1.16.63",
         "google-cloud-storage==1.35.0"
