@@ -31,7 +31,7 @@ setup(
         "hurry.filesize==0.9",
         "python-dotenv==0.15.0",
         "azure-storage-blob==12.7.1",
-        "boto3==1.16.63",
+        "boto3==1.17.68",
         "google-cloud-storage==1.35.0"
         ],
     entry_points={
