@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="mongodump-s3",
-    version="1.1.0",
+    version="1.1.1",
     description="Backup utility for MongoDB. "
                 "Compatible with Azure, Amazon Web Services and Google Cloud Platform.",
     long_description=README,
@@ -27,12 +27,12 @@ setup(
     packages=["mongodump_s3"],
     include_package_data=False,
     install_requires=[
-        "requests==2.25.1",
+        "requests>=2.26.0",
         "hurry.filesize==0.9",
-        "python-dotenv==0.15.0",
-        "azure-storage-blob==12.7.1",
-        "boto3==1.16.63",
-        "google-cloud-storage==1.35.0"
+        "python-dotenv>=0.18.0",
+        "azure-storage-blob>=12.8.1",
+        "boto3>=1.17.111",
+        "google-cloud-storage>=1.41.0"
         ],
     entry_points={
         "console_scripts": [
