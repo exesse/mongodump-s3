@@ -2,5 +2,7 @@ venv/
 .venv/
 .pytype/
 .idea/
-mongodump_s3/__pycache__/
 dev.*
+dist/
+mongodump_s3/__pycache__/
+mongodump_s3.egg-info/

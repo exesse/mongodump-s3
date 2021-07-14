@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="mongodump-s3",
-    version="1.1.1",
+    version="1.1.2",
     description="Backup utility for MongoDB. "
                 "Compatible with Azure, Amazon Web Services and Google Cloud Platform.",
     long_description=README,
