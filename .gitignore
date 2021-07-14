@@ -1,4 +1,5 @@
 venv/
+.venv/
 .pytype/
 .idea/
 mongodump_s3/__pycache__/
