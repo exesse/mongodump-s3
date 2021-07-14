@@ -27,7 +27,7 @@ setup(
     packages=["mongodump_s3"],
     include_package_data=False,
     install_requires=[
-        "requests==2.25.1",
+        "requests==2.26.0",
         "hurry.filesize==0.9",
         "python-dotenv==0.15.0",
         "azure-storage-blob==12.7.1",
